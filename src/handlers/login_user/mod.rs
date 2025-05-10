@@ -4,7 +4,7 @@ use crate::models::login_user::{LoginInput, User};
 use crate::utils::jwt::create_jwt;
 use serde_json::json;
 
-#[post("s4u/user/auth/login")]
+#[post("s4u/users/auth/login")]
 pub async fn login_user(
     db: web::Data<PgPool>,
     input: web::Json<LoginInput>,

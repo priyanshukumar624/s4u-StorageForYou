@@ -4,3 +4,7 @@ pub mod download_file;
 pub mod delete_file;
 pub mod register_user;
 pub mod login_user;
+pub mod create_folder;
+pub mod delete_folder;
+pub mod rename_folder;
+pub mod list_folder;

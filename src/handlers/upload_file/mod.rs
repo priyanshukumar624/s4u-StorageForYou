@@ -10,7 +10,7 @@ use crate::utils::init::UPLOAD_DIR;
 use actix_web::web;
 use std::collections::HashMap;
 
-#[post("s4u/file/upload")]
+#[post("s4u/users/file/upload")]
 pub async fn upload(
     mut payload: Multipart,
     query: web::Query<HashMap<String, String>>,

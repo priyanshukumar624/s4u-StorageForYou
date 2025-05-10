@@ -6,7 +6,7 @@ use log::{info, error};
 use crate::utils::init::UPLOAD_DIR;
 use std::collections::HashMap;
 
-#[get("s4u/files/downloads/{filename}")]
+#[get("s4u/users/files/downloads/{filename}")]
 pub async fn download_file(
     path: web::Path<String>,
     query: web::Query<HashMap<String, String>>,

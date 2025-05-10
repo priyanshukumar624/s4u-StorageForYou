@@ -3,7 +3,7 @@ use sqlx::PgPool;
 use crate::models::register_user::RegisterInput;
 
 
-#[post("s4u/user/auth/register")]
+#[post("s4u/users/auth/register")]
 pub async fn register_user(
     db: web::Data<PgPool>,
     input: web::Json<RegisterInput>,

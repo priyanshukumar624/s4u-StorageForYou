@@ -5,7 +5,7 @@ use crate::utils::init::UPLOAD_DIR;
 use log::{info, error};
 use std::collections::HashMap;
 
-#[delete("s4u/files/delete/{filename}")]
+#[delete("s4u/users/files/delete/{filename}")]
 pub async fn delete_file(
     path: web::Path<String>,
     query: web::Query<HashMap<String, String>>,

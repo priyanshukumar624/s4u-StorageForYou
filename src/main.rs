@@ -15,6 +15,10 @@ use handlers::{
     delete_file::delete_file,
     register_user::register_user,
     login_user::login_user,
+    create_folder::create_folder,
+    delete_folder::delete_folder,       
+    rename_folder::rename_folder,
+    list_folder::list_folders
 };
 
 use utils::init::init_upload_dir;
@@ -43,6 +47,12 @@ async fn main() -> std::io::Result<()> {
             .service(delete_file)
             .service(register_user)
             .service(login_user)
+            .service(create_folder)
+            .service(delete_folder)
+            .service(rename_folder)
+            .service(list_folders)
+
+
     })
     .bind("127.0.0.1:8080")?
     .run()
