@@ -3,7 +3,7 @@ mod models;
 mod utils;
 
 use actix_web::{App, HttpServer};
-use handlers::{upload::upload, list::list_files, download::download_file, delete_file::delete_file};
+use handlers::{upload_file::upload, list_file::list_files, download_file::download_file, delete_file::delete_file};
 use utils::init::init_upload_dir;
 
 #[actix_web::main]
