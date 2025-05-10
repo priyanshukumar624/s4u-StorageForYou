@@ -5,7 +5,7 @@ use crate::models::login_user::User;
 
 
 
-#[post("s4u/user/login")]
+#[post("s4u/user/auth/login")]
 pub async fn login_user(
     db: web::Data<PgPool>,
     input: web::Json<LoginInput>,

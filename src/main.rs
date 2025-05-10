@@ -21,14 +21,19 @@ use utils::init::init_upload_dir;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // ✅ Load .env and initialize logger
     dotenv().ok();
     env_logger::init();
-    init_upload_dir();
 
+    // ✅ Initialize root upload directory (no subfolder)
+    init_upload_dir(None);
+
+    // ✅ Initialize database connection pool
     let db_pool = init_db_pool().await;
 
     println!("🚀 Starting server at http://127.0.0.1:8080");
 
+    // ✅ Start Actix web server
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(db_pool.clone()))

@@ -4,12 +4,21 @@ use log::{error, info};
 
 pub const UPLOAD_DIR: &str = "./uploads/";
 
-pub fn init_upload_dir() {
-    if !Path::new(UPLOAD_DIR).exists() {
-        if let Err(e) = fs::create_dir_all(UPLOAD_DIR) {
-            error!("❌ Failed to create upload directory: {}", e);
-        } else {
-            info!("✅ Upload directory created.");
+/// Initialize the base upload directory or a user-specific subdirectory
+pub fn init_upload_dir(sub_dir: Option<&str>) {
+    let dir_path = match sub_dir {
+        Some(sub) => format!("{}{}", UPLOAD_DIR, sub),
+        None => UPLOAD_DIR.to_string(),
+    };
+
+    let path = Path::new(&dir_path);
+
+    if !path.exists() {
+        match fs::create_dir_all(path) {
+            Ok(_) => info!("✅ Created directory: {}", dir_path),
+            Err(e) => error!("❌ Failed to create directory {}: {}", dir_path, e),
         }
+    } else {
+        info!("📁 Directory already exists: {}", dir_path);
     }
 }
