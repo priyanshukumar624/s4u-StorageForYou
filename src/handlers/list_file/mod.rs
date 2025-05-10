@@ -5,7 +5,7 @@ use crate::models::file_meta::FileMeta;
 use crate::utils::init::UPLOAD_DIR;
 use crate::init_upload_dir;
 
-#[get("/files/all")]
+#[get("s4u/files/all")]
 pub async fn list_files() -> impl Responder {
     init_upload_dir();
 

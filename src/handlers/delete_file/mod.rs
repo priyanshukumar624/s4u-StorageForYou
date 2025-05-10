@@ -4,7 +4,7 @@ use std::path::Path;
 use crate::utils::init::UPLOAD_DIR;
 use log::{info, error};
 
-#[delete("/files/delete/{filename}")]
+#[delete("s4u/files/delete/{filename}")]
 pub async fn delete_file(path: web::Path<String>) -> impl Responder {
     let filename = path.into_inner();
     let filepath = format!("{}/{}", UPLOAD_DIR, filename);

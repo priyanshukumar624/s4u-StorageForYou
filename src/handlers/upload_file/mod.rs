@@ -9,7 +9,7 @@ use log::{info, error, warn};
 use crate::utils::init::UPLOAD_DIR;
 use crate::init_upload_dir;
 
-#[post("/file/upload")]
+#[post("s4u/file/upload")]
 pub async fn upload(mut payload: Multipart) -> impl Responder {
     init_upload_dir();
 
