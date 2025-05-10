@@ -1,9 +1,8 @@
 use actix_web::{post, web, HttpResponse, Responder};
 use sqlx::PgPool;
-use crate::models::login_user::LoginInput;
-use crate::models::login_user::User;
-
-
+use crate::models::login_user::{LoginInput, User};
+use crate::utils::jwt::create_jwt;
+use serde_json::json;
 
 #[post("s4u/user/auth/login")]
 pub async fn login_user(
@@ -22,9 +21,20 @@ pub async fn login_user(
     .await;
 
     match user {
-        Ok(Some(_user)) => {
+        Ok(Some(user)) => {
             println!("✅ Login successful for {}", input.email);
-            HttpResponse::Ok().body("Login successful")
+
+            // Generate JWT token
+           match create_jwt(&user.email) {
+                Ok(token) => HttpResponse::Ok().json(json!({
+                    "message": "Login successful",
+                    "token": token
+                })),
+                Err(err) => {
+                    println!("❌ JWT creation failed: {}", err);
+                    HttpResponse::InternalServerError().body("Token generation failed")
+                }
+            }
         }
         Ok(None) => {
             println!("⚠️ Invalid credentials for {}", input.email);
