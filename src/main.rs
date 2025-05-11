@@ -21,7 +21,9 @@ use handlers::{
     create_folder::create_folder,
     delete_folder::delete_folder,       
     rename_folder::rename_folder,
-    list_folder::list_folders
+    list_folder::list_folders,
+     share_file::share_file       // ✅ Add this
+    // share_folder::share_folder  
 };
 
 use utils::init::init_upload_dir;
@@ -70,7 +72,9 @@ async fn main() -> std::io::Result<()> {
             .service(create_folder)
             .service(delete_folder)
             .service(rename_folder)
-            .service(list_folders);
+            .service(list_folders)
+            .service(share_file);        // ✅ Add this
+            // .service(share_folder);      // ✅ Add this
 
         App::new()
             .app_data(web::Data::new(db_pool.clone()))

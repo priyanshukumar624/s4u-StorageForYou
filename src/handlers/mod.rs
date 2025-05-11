@@ -8,3 +8,4 @@ pub mod create_folder;
 pub mod delete_folder;
 pub mod rename_folder;
 pub mod list_folder;
+pub mod share_file;
