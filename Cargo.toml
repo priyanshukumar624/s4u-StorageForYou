@@ -22,3 +22,4 @@ dotenvy = "0.15.7"
 jsonwebtoken = "9"
 chrono = "0.4"
 actix-service = "2"
+actix-web-httpauth = "0.8.0"  # or the latest version

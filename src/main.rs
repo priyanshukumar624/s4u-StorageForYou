@@ -2,8 +2,10 @@ mod handlers;
 mod models;
 mod utils;
 mod database;
+mod auth;
 
 use actix_web::{App, HttpServer, web};
+use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenvy::dotenv;
 use env_logger;
 use database::pg_admin4::init_db_pool; 
@@ -25,34 +27,42 @@ use utils::init::init_upload_dir;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // ✅ Load .env and initialize logger
     dotenv().ok();
     env_logger::init();
 
-    // ✅ Initialize root upload directory (no subfolder)
-    init_upload_dir(None);
+    // Verify API_KEY is set
+    std::env::var("API_KEY").expect("API_KEY must be set in .env");
 
-    // ✅ Initialize database connection pool
+    init_upload_dir(None);
     let db_pool = init_db_pool().await;
 
     println!("🚀 Starting server at http://127.0.0.1:8080");
 
-    // ✅ Start Actix web server
+    // Create auth middleware
+    let auth = HttpAuthentication::bearer(auth::validator);
+
     HttpServer::new(move || {
-        App::new()
-            .app_data(web::Data::new(db_pool.clone()))
+        // Public routes (no auth)
+        let public_scope = web::scope("/public")
+            .service(register_user)
+            .service(login_user);
+
+        // Protected routes (require API key)
+        let protected_scope = web::scope("/protected")
+            .wrap(auth.clone())
             .service(upload)
             .service(list_files)
             .service(download_file)
             .service(delete_file)
-            .service(register_user)
-            .service(login_user)
             .service(create_folder)
             .service(delete_folder)
             .service(rename_folder)
-            .service(list_folders)
+            .service(list_folders);
 
-
+        App::new()
+            .app_data(web::Data::new(db_pool.clone()))
+            .service(public_scope)
+            .service(protected_scope)
     })
     .bind("127.0.0.1:8080")?
     .run()
