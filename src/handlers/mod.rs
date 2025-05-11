@@ -10,3 +10,5 @@ pub mod rename_folder;
 pub mod list_folder;
 pub mod share_file;
 pub mod share_folder;
+pub mod trash_file;
+// pub mod trash_folder;
