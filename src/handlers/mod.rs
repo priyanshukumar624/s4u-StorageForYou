@@ -9,3 +9,4 @@ pub mod delete_folder;
 pub mod rename_folder;
 pub mod list_folder;
 pub mod share_file;
+pub mod share_folder;

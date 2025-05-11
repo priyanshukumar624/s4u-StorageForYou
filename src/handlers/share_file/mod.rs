@@ -6,17 +6,17 @@ use crate::utils::init::UPLOAD_DIR;
 
 #[post("/s4u/users/file/share")]
 pub async fn share_file(query: web::Query<HashMap<String, String>>) -> impl Responder {
-    let owner = query.get("owner_email").map(|s| s.trim()).unwrap_or("");
-    let receiver = query.get("shared_with").map(|s| s.trim()).unwrap_or("");
+    let from = query.get("from").map(|s| s.trim()).unwrap_or("");
+    let to = query.get("to").map(|s| s.trim()).unwrap_or("");
     let file = query.get("name").map(|s| s.trim()).unwrap_or("");
 
-    if owner.is_empty() || receiver.is_empty() || file.is_empty() {
+    if from.is_empty() || to.is_empty() || file.is_empty() {
         println!("❌ Missing required query parameters");
-        return HttpResponse::BadRequest().body("❌ Required: owner_email, shared_with, name");
+        return HttpResponse::BadRequest().body("❌ Required: from, to, name");
     }
 
-    let src = format!("{}/{}/{}", UPLOAD_DIR, owner, file);
-    let dst_folder = format!("{}/{}/shared_from_{}", UPLOAD_DIR, receiver, owner);
+    let src = format!("{}/{}/{}", UPLOAD_DIR, from, file);
+    let dst_folder = format!("{}/{}/shared_from_{}", UPLOAD_DIR, to, from);
     let dst = format!("{}/{}", dst_folder, file);
 
     if !Path::new(&src).exists() {
@@ -31,7 +31,7 @@ pub async fn share_file(query: web::Query<HashMap<String, String>>) -> impl Resp
 
     match fs::copy(&src, &dst) {
         Ok(_) => {
-            println!("✅ File '{}' shared from '{}' to '{}'", file, owner, receiver);
+            println!("✅ File '{}' shared from '{}' to '{}'", file, from, to);
             HttpResponse::Ok().body(format!("✅ File '{}' shared", file))
         }
         Err(e) => {
