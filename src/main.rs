@@ -29,7 +29,8 @@ use handlers::{
     trash_file::move_file_to_trash,// ✅ Add this
     restore_file::restore_file,// ✅ Uncomment if you implement this
     trash_folder::move_folder_to_trash,
-    restore_folder::restore_folder
+    restore_folder::restore_folder,
+    space_checker::remaining_space
 };
 
 use utils::init::init_upload_dir;
@@ -84,7 +85,8 @@ async fn main() -> std::io::Result<()> {
             .service(move_file_to_trash)// ✅ Add this
             .service(restore_file)
             .service(move_folder_to_trash)
-            .service(restore_folder);
+            .service(restore_folder)
+            .service(remaining_space);
 
         App::new()
             .app_data(web::Data::new(db_pool.clone()))

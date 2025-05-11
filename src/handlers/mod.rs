@@ -14,3 +14,4 @@ pub mod trash_file;
 pub mod restore_file;
 pub mod trash_folder;
 pub mod restore_folder;
+pub mod space_checker;
