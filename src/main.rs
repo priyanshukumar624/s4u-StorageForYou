@@ -24,7 +24,8 @@ use handlers::{
     list_folder::list_folders,
      share_file::share_file,      // ✅ Add this
     share_folder::share_folder,
-    trash_file::move_file_to_trash // ✅ Add this
+    trash_file::move_file_to_trash,// ✅ Add this
+    restore_file::restore_file // ✅ Uncomment if you implement this
     // trash_folder::trash_folder,
 };
 
@@ -77,7 +78,8 @@ async fn main() -> std::io::Result<()> {
             .service(list_folders)
             .service(share_file)     // ✅ Add this
             .service(share_folder)  
-            .service(move_file_to_trash);// ✅ Add this
+            .service(move_file_to_trash)// ✅ Add this
+            .service(restore_file);// ✅ Uncomment if you implement this
             // .service(trash_folder) // ✅ Uncomment if you implement this
 
         App::new()
