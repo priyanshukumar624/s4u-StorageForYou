@@ -15,3 +15,4 @@ pub mod restore_file;
 pub mod trash_folder;
 pub mod restore_folder;
 pub mod space_checker;
+pub mod storage_status;
