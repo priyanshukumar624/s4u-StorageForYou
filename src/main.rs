@@ -7,7 +7,8 @@ mod auth;
 use actix_web::{App, HttpServer, web};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenvy::dotenv;
-use env_logger;
+use env_logger::Env;
+use log::{info, error};
 use database::pg_admin4::init_db_pool; 
 
 use handlers::{
@@ -27,27 +28,39 @@ use utils::init::init_upload_dir;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // ✅ Load environment variables from .env
     dotenv().ok();
-    env_logger::init();
 
-    // Verify API_KEY is set
-    std::env::var("API_KEY").expect("API_KEY must be set in .env");
+    // ✅ Initialize logger with default level fallback
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
+    // ✅ Check API_KEY and log explicitly
+    match std::env::var("API_KEY") {
+        Ok(_) => info!("✅ API_KEY found in environment."),
+        Err(_) => {
+            error!("❌ API_KEY not set in .env file!");
+            panic!("API_KEY must be set in .env");
+        }
+    }
+
+    // ✅ Initialize upload directory
     init_upload_dir(None);
+    info!("📁 Upload directory initialized.");
+
+    // ✅ Initialize database pool
     let db_pool = init_db_pool().await;
+    info!("📦 Database pool initialized.");
 
-    println!("🚀 Starting server at http://127.0.0.1:8080");
+    info!("🚀 Starting server at http://127.0.0.1:8080");
 
-    // Create auth middleware
+    // ✅ Auth middleware
     let auth = HttpAuthentication::bearer(auth::validator);
 
     HttpServer::new(move || {
-        // Public routes (no auth)
         let public_scope = web::scope("/public")
             .service(register_user)
             .service(login_user);
 
-        // Protected routes (require API key)
         let protected_scope = web::scope("/protected")
             .wrap(auth.clone())
             .service(upload)
@@ -64,7 +77,7 @@ async fn main() -> std::io::Result<()> {
             .service(public_scope)
             .service(protected_scope)
     })
-    .bind("127.0.0.1:8080")?
+    .bind("192.168.1.8:8080")?
     .run()
     .await
 }
