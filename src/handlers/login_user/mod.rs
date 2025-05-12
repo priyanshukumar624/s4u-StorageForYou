@@ -21,10 +21,16 @@ pub async fn login_user(
     .await;
 
     match user {
-        Ok(Some(_user)) => {
-            println!("✅ Login successful for {}", input.email);
-            HttpResponse::Ok().body("Login successful")
-        }
+       Ok(Some(_user)) => {
+    println!("✅ Login successful for {}", input.email);
+
+    let api_key = std::env::var("API_KEY").unwrap_or_else(|_| "API_KEY_NOT_FOUND".to_string());
+
+    HttpResponse::Ok().body(format!(
+        "Login successful\nAPI_KEY: {}",
+        api_key
+    ))
+}
         Ok(None) => {
             println!("⚠️ Invalid credentials for {}", input.email);
             HttpResponse::Unauthorized().body("Invalid email or password")
