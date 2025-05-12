@@ -16,4 +16,5 @@ pub mod trash_folder;
 pub mod restore_folder;
 pub mod space_checker;
 pub mod storage_status;
-pub mod upload_folder;
+pub mod upload_file_on_folder;
+pub mod delete_file_from_folder;

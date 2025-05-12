@@ -32,7 +32,8 @@ use handlers::{
     restore_folder::restore_folder,
     space_checker::remaining_space,
     storage_status::storage_status,
-    upload_folder::upload_folder
+    upload_file_on_folder::upload_folder,
+    delete_file_from_folder::del_file_from_folder
 };
 
 use utils::init::init_upload_dir;
@@ -90,7 +91,8 @@ async fn main() -> std::io::Result<()> {
             .service(restore_folder)
             .service(remaining_space)
             .service(storage_status)
-            .service(upload_folder);
+            .service(upload_folder)
+            .service(del_file_from_folder);
 
         App::new()
             .app_data(web::Data::new(db_pool.clone()))
