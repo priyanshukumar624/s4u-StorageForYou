@@ -24,3 +24,4 @@ chrono = "0.4"
 actix-service = "2"
 actix-web-httpauth = "0.8.0"  # or the latest version
 fs_extra = "1.2"
+walkdir = "2.4"
