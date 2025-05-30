@@ -5,7 +5,7 @@ use log::{info, error};
 use crate::models::file_meta::FileMeta;
 use crate::utils::init::{UPLOAD_DIR, init_upload_dir};
 
-#[get("s4u/users/files/retrieve-all")]
+#[get("s4u/users/files/retrieve-all-files")]
 pub async fn list_files(query: web::Query<HashMap<String, String>>) -> impl Responder {
     // ✅ Get email from query parameters
     let email = match query.get("email") {

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::fs;
 use crate::utils::init::UPLOAD_DIR;
 
-#[get("/s4u/users/folder/retrieve-all-list")]
+#[get("/s4u/users/folder/retrieve-all-folders")]
 pub async fn list_folders(query: web::Query<HashMap<String, String>>) -> impl Responder {
     let email = match query.get("email") {
         Some(val) => val,

@@ -9,9 +9,10 @@ use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenvy::dotenv;
 use env_logger::Env;
 use log::{info, error};
-use database::pg_admin4::init_db_pool; 
+use actix_cors::Cors;
+use std::env;
 
-
+use database::pg_admin4::init_db_pool;
 
 use handlers::{
     upload_file::upload,
@@ -21,20 +22,20 @@ use handlers::{
     register_user::register_user,
     login_user::login_user,
     create_folder::create_folder,
-    delete_folder::delete_folder,       
+    delete_folder::delete_folder,
     rename_folder::rename_folder,
     list_folder::list_folders,
-     share_file::share_file,      // ✅ Add this
+    share_file::share_file,
     share_folder::share_folder,
-    trash_file::move_file_to_trash,// ✅ Add this
-    restore_file::restore_file,// ✅ Uncomment if you implement this
+    trash_file::move_file_to_trash,
+    restore_file::restore_file,
     trash_folder::move_folder_to_trash,
     restore_folder::restore_folder,
     space_checker::remaining_space,
     storage_status::storage_status,
     upload_file_on_folder::upload_folder,
     delete_file_from_folder::del_file_from_folder,
-    search_files_and_folders::search_files_and_folders
+    search_files_and_folders::search_files_and_folders,
 };
 
 use utils::init::init_upload_dir;
@@ -44,11 +45,11 @@ async fn main() -> std::io::Result<()> {
     // ✅ Load environment variables from .env
     dotenv().ok();
 
-    // ✅ Initialize logger with default level fallback
+    // ✅ Initialize logger
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
-    // ✅ Check API_KEY and log explicitly
-    match std::env::var("API_KEY") {
+    // ✅ Ensure API_KEY is set
+    match env::var("API_KEY") {
         Ok(_) => info!("✅ API_KEY found in environment."),
         Err(_) => {
             error!("❌ API_KEY not set in .env file!");
@@ -56,11 +57,11 @@ async fn main() -> std::io::Result<()> {
         }
     }
 
-    // ✅ Initialize upload directory
+    // ✅ Prepare upload directory
     init_upload_dir(None);
     info!("📁 Upload directory initialized.");
 
-    // ✅ Initialize database pool
+    // ✅ Setup database
     let db_pool = init_db_pool().await;
     info!("📦 Database pool initialized.");
 
@@ -70,6 +71,13 @@ async fn main() -> std::io::Result<()> {
     let auth = HttpAuthentication::bearer(auth::validator);
 
     HttpServer::new(move || {
+        // ✅ Setup CORS (Allow all origins during development)
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allow_any_method()
+            .allow_any_header()
+            .max_age(3600);
+
         let public_scope = web::scope("/public")
             .service(register_user)
             .service(login_user);
@@ -84,9 +92,9 @@ async fn main() -> std::io::Result<()> {
             .service(delete_folder)
             .service(rename_folder)
             .service(list_folders)
-            .service(share_file)     // ✅ Add this
-            .service(share_folder)  
-            .service(move_file_to_trash)// ✅ Add this
+            .service(share_file)
+            .service(share_folder)
+            .service(move_file_to_trash)
             .service(restore_file)
             .service(move_folder_to_trash)
             .service(restore_folder)
@@ -97,11 +105,12 @@ async fn main() -> std::io::Result<()> {
             .service(search_files_and_folders);
 
         App::new()
+            .wrap(cors)
             .app_data(web::Data::new(db_pool.clone()))
             .service(public_scope)
             .service(protected_scope)
     })
-    .bind("192.168.1.8:8080")?
+    .bind("127.0.0.1:8080")?
     .run()
     .await
 }
